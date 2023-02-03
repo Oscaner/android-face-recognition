@@ -1,23 +1,19 @@
 package com.irhammuch.android.facerecognition;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.face.Face;
 import com.google.mlkit.vision.face.FaceDetection;
@@ -33,7 +29,6 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class MainActivityImage extends AppCompatActivity {
@@ -43,9 +38,7 @@ public class MainActivityImage extends AppCompatActivity {
     private static final String TAG = "MainActivityImage";
 
     // UI
-    private ProgressDialog mDialog;
-    private Toolbar mToolbar;
-    private FloatingActionButton mFabActionBt;
+    private Button mFabActionBt;
 
     private Interpreter tfLite;
 
@@ -61,10 +54,6 @@ public class MainActivityImage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_image);
-        setSupportActionBar(mToolbar);
-
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbar.setTitle(getString(R.string.app_name));
 
         loadModel();
 
@@ -79,7 +68,7 @@ public class MainActivityImage extends AppCompatActivity {
     }
 
     protected void setupUI() {
-        mFabActionBt = (FloatingActionButton) findViewById(R.id.start);
+        mFabActionBt = (Button) findViewById(R.id.start);
         mFabActionBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -139,18 +128,6 @@ public class MainActivityImage extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void showDiaglog(String title) {
-        dismissDialog();
-        mDialog = ProgressDialog.show(MainActivityImage.this, title, "process..", true);
-    }
-
-    private void dismissDialog() {
-        if (mDialog != null) {
-            mDialog.dismiss();
-            mDialog = null;
         }
     }
 
