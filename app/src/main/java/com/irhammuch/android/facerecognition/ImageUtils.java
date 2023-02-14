@@ -104,7 +104,7 @@ public class ImageUtils {
         }
 
         if (name == null) {
-            name = "face" + registered.size();
+            name = String.valueOf(registered.size());
 
             SimilarityClassifier.Recognition result = new SimilarityClassifier.Recognition("0", "1", -1f);
             result.setExtra(embeddings);

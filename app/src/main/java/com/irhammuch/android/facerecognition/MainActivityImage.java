@@ -44,6 +44,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 public class MainActivityImage extends AppCompatActivity {
@@ -67,6 +68,8 @@ public class MainActivityImage extends AppCompatActivity {
     private final HashMap<String, InputImage> inputImages = new HashMap<>();
 
     private final HashMap<String, List<String>> imageTags = new HashMap<>(); // image tags.
+
+    private final TreeMap<Integer, Bitmap> avatars = new TreeMap<>(); // avatars.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +98,9 @@ public class MainActivityImage extends AppCompatActivity {
 
         materialListViews.put("empty", createMaterialListView());
         mLinearLayout.addView(materialListViews.get("empty"));
+
+        materialListViews.put("avatars", createMaterialListView());
+        mLinearLayout.addView(materialListViews.get("avatars"));
 
         mStartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,6 +193,10 @@ public class MainActivityImage extends AppCompatActivity {
             }
             tags.add(name);
             imageTags.put(image_path, tags);
+
+            if (avatars.get(Integer.valueOf(name)) == null) {
+                avatars.put(Integer.valueOf(name), bitmap);
+            }
         }
 
         logger.info("Done of " + image_path);
@@ -204,11 +214,28 @@ public class MainActivityImage extends AppCompatActivity {
             }
         }
 
+        for (Map.Entry<Integer, Bitmap> entry: avatars.entrySet()) {
+            materialListViews.get("avatars").getAdapter().add(
+                    new Card.Builder(this)
+                        .withProvider(new CardProvider())
+                        .setLayout(R.layout.material_basic_image_buttons_card_layout)
+                        .setTitle("face" + entry.getKey())
+                        .setTitleGravity(Gravity.END)
+                        .setDrawable(new BitmapDrawable(getResources(), entry.getValue()))
+                        .setDrawableConfiguration(new CardProvider.OnImageConfigListener() {
+                            @Override
+                            public void onImageConfigure(@NonNull RequestCreator requestCreator) {
+                                requestCreator.fit();
+                            }
+                        })
+                        .endConfig()
+                        .build()
+            );
+        }
+
         for (Map.Entry<String, List<String>> entry: imageTags.entrySet()) {
-            if (entry.getValue() == null) {
-                materialListViews.get("empty").getAdapter().add(createCard("empty", entry));
-            } else {
-                for (String tag: entry.getValue()) {
+            if (entry.getValue() != null) {
+                for (String tag : entry.getValue()) {
                     logger.info(tag);
                     materialListViews.get(tag).getAdapter().add(createCard(tag, entry));
                 }
